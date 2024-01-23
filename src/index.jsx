@@ -2,11 +2,28 @@ import { StrictMode, useEffect, useRef, useState, useMemo, useCallback } from 'r
 import { createRoot } from 'react-dom/client'
 import { Canvas } from '@react-three/fiber'
 import { Perf } from 'r3f-perf'
-import { OrbitControls } from '@react-three/drei'
+import { OrbitControls, useGLTF  } from '@react-three/drei'
+
 import "./tailwind.output.css";
 
 import './styles.css'
-
+useGLTF.preload('./models/shoe-draco.glb')
+const Shoe = () => {
+  const { nodes, materials } = useGLTF('/models/shoe-draco.glb')
+  return (<group
+      dispose={null}
+    >
+      <mesh geometry={nodes.shoe.geometry} material={materials.laces} />
+      <mesh geometry={nodes.shoe_1.geometry} material={materials.mesh} />
+      <mesh geometry={nodes.shoe_2.geometry} material={materials.caps} />
+      <mesh geometry={nodes.shoe_3.geometry} material={materials.inner} />
+      <mesh geometry={nodes.shoe_4.geometry} material={materials.sole} />
+      <mesh geometry={nodes.shoe_5.geometry} material={materials.stripes} />
+      <mesh geometry={nodes.shoe_6.geometry} material={materials.band} />
+      <mesh geometry={nodes.shoe_7.geometry} material={materials.patch} />
+    </group>
+  )
+}
 const Scene = ({ color = 0x00ff00, vector = [0, 0, 0] } = {}) => {
   const boxMeshRef = useRef()
   const [newColor, setNewColor] = useState(color);
@@ -81,6 +98,7 @@ const App = () => {
     <Canvas camera={{ position: [0, 0, 2] }}>
       <Perf position="top-left" />
       <Scene color={color.current} vector={vector} />
+      <Shoe/>
       <OrbitControls />
     </Canvas>
   </>
