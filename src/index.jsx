@@ -28,7 +28,7 @@ const App = () => {
   const color = useRef(0x00ff00)
   const stringColor = useMemo(() => colorNumberToString(color.current), [color.current])
   const rerender = useRerender()
-  return <><input className="absolute" type="color" value={stringColor} onChange={e => {
+  return <><input className="absolute z-50" type="color" value={stringColor} onChange={e => {
     color.current = colorStringToNumber(e.target.value)
     rerender()
   }} />
