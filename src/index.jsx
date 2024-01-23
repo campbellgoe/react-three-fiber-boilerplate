@@ -1,6 +1,7 @@
 import { StrictMode, useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Canvas } from '@react-three/fiber'
+import { Perf } from 'r3f-perf'
 import "./tailwind.output.css";
 
 import './styles.css'
@@ -72,11 +73,12 @@ const App = () => {
       document.removeEventListener('keydown', onDocumentKey)
     }
   }, [])
-  return <><input className="absolute z-50" type="color" value={stringColor} onChange={e => {
+  return <><input className="absolute z-50 right-0" type="color" value={stringColor} onChange={e => {
     color.current = colorStringToNumber(e.target.value)
     rerender()
   }} />
     <Canvas camera={{ position: [0, 0, 2] }}>
+      <Perf position="top-left" />
       <Scene color={color.current} vector={vector} />
     </Canvas>
   </>
