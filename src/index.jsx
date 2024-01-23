@@ -31,7 +31,7 @@ const Scene = ({ color = 0x00ff00, vector = [0, 0, 0] } = {}) => {
         <boxGeometry />
         <meshStandardMaterial color={newColor} emissive={0xffffff} emissiveIntensity={hovered ? 0.03 : 0} />
       </mesh>
-      <ambientLight intensity={0.1} />
+      <ambientLight intensity={Math.PI * 0.1} />
       <pointLight position={[0, 1, 1]} />
 
     </>
