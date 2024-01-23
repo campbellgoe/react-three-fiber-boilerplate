@@ -2,6 +2,7 @@ import { StrictMode, useEffect, useRef, useState, useMemo, useCallback } from 'r
 import { createRoot } from 'react-dom/client'
 import { Canvas } from '@react-three/fiber'
 import { Perf } from 'r3f-perf'
+import { OrbitControls } from '@react-three/drei'
 import "./tailwind.output.css";
 
 import './styles.css'
@@ -28,7 +29,7 @@ const Scene = ({ color = 0x00ff00, vector = [0, 0, 0] } = {}) => {
       onPointerOver={() => setHover(true)}
       onPointerOut={() => setHover(false)}>
         <boxGeometry />
-        <meshStandardMaterial color={newColor} emissive={0xffffff} emissiveIntensity={hovered ? 0.1 : 0} />
+        <meshStandardMaterial color={newColor} emissive={0xffffff} emissiveIntensity={hovered ? 0.03 : 0} />
       </mesh>
       <ambientLight intensity={0.1} />
       <pointLight position={[0, 1, 1]} />
@@ -80,6 +81,7 @@ const App = () => {
     <Canvas camera={{ position: [0, 0, 2] }}>
       <Perf position="top-left" />
       <Scene color={color.current} vector={vector} />
+      <OrbitControls />
     </Canvas>
   </>
 }
