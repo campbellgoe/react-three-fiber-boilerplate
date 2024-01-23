@@ -1,19 +1,20 @@
-import { StrictMode, useEffect, useRef, useState, useMemo } from 'react'
+import { StrictMode, useEffect, useRef, useState, useMemo, useCallback } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Canvas } from '@react-three/fiber'
+import "./tailwind.output.css";
+
 import './styles.css'
 
 const Scene = ({ color = 0x00ff00 } = {}) => {
   const [newColor, setNewColor] = useState(color);
   useEffect(() => {
     setNewColor(color)
-    // setNewColor((color + 0xff0000) % 0xffffff)
   }, [color])
   return (
-  <mesh>
-    <boxGeometry />
-    <meshBasicMaterial color={newColor} wireframe />
-  </mesh>
+    <mesh>
+      <boxGeometry />
+      <meshBasicMaterial color={newColor} wireframe />
+    </mesh>
   )
 }
 
@@ -21,24 +22,24 @@ const useRerender = () => {
   const [tick, setTick] = useState(0)
   return () => setTick(tick + 1)
 }
-
+const colorStringToNumber = val => parseInt(val.replace('#', '0x'))
+const colorNumberToString = val => '#' + val.toString(16)
 const App = () => {
   const color = useRef(0x00ff00)
-  const stringColor = useMemo(() => '#'+color.current.toString(16), [color.current])
-  console.log('string color:', stringColor)
+  const stringColor = useMemo(() => colorNumberToString(color.current), [color.current])
   const rerender = useRerender()
-  return <><input type="color" value={stringColor} onChange={e => {
-    color.current = parseInt(e.target.value.replace('#', '0x'))
+  return <><input className="absolute" type="color" value={stringColor} onChange={e => {
+    color.current = colorStringToNumber(e.target.value)
     rerender()
-  }}/><code>Colour: {(color.current+"").replace('0x', '#')}</code>
-   <Canvas camera={{ position: [0, 0, 2] }}>
+  }} />
+    <Canvas camera={{ position: [0, 0, 2] }}>
       <Scene color={color.current} />
-      </Canvas>
-      </>
+    </Canvas>
+  </>
 }
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App/>
+    <App />
   </StrictMode>
 )
