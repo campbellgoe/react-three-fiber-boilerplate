@@ -5,13 +5,21 @@ import "./tailwind.output.css";
 
 import './styles.css'
 
-const Scene = ({ color = 0x00ff00 } = {}) => {
+const Scene = ({ color = 0x00ff00, vector = [0,0,0] } = {}) => {
+  const boxMeshRef = useRef()
   const [newColor, setNewColor] = useState(color);
   useEffect(() => {
     setNewColor(color)
   }, [color])
+  useEffect(() => {
+    if (boxMeshRef.current) {
+      boxMeshRef.current.position.x += vector[0]
+      boxMeshRef.current.position.y += vector[1]
+      boxMeshRef.current.position.z += vector[2]
+    }
+  }, [vector])
   return (
-    <mesh>
+    <mesh ref={boxMeshRef}>
       <boxGeometry />
       <meshBasicMaterial color={newColor} wireframe />
     </mesh>
@@ -28,12 +36,38 @@ const App = () => {
   const color = useRef(0x00ff00)
   const stringColor = useMemo(() => colorNumberToString(color.current), [color.current])
   const rerender = useRerender()
+  const [vector, setVector] = useState([0, 0, 0])
+  useEffect(() => {
+    const onDocumentKey = (e) => {
+      console.log(e.code)
+      const code = e.code
+      const codeMap = {
+        KeyW: [0, 0, -1],
+        KeyS: [0, 0, 1],
+        KeyA: [-1, 0, 0],
+        KeyD: [1, 0, 0],
+        KeyQ: [0, 1, 0],
+        KeyE: [0, -1, 0],
+      }
+      if(code in codeMap){
+        const vector = codeMap[code]
+        setVector(vector)
+      } else {
+        setVector([0, 0, 0])
+      }
+      
+    }
+    document.addEventListener('keydown', onDocumentKey)
+    return () => {
+      document.removeEventListener('keydown', onDocumentKey)
+    }
+  }, [])
   return <><input className="absolute z-50" type="color" value={stringColor} onChange={e => {
     color.current = colorStringToNumber(e.target.value)
     rerender()
   }} />
     <Canvas camera={{ position: [0, 0, 2] }}>
-      <Scene color={color.current} />
+      <Scene color={color.current} vector={vector}/>
     </Canvas>
   </>
 }
